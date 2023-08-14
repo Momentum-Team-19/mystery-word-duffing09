@@ -1,20 +1,56 @@
 # imports the random module, used to generate random numbers or make random selections
 import random
+
+# def categorize_words(filename):
+#     easy_words = [word for word in words_list if 4 <=len(word) <=6]
+#     medium_words = [word for word in words_list if 6 <= len(word) <=8]
+#     hard_words = [word for word in words_list if len(word) > 8]
+
+    # return easy_words, medium_words, hard_words
 # this line starts the definition of a function named 'select_word' that takes a single argument 'filename'
-def select_word(filename):
-# uses 'with' statement to open specified 'filename' in read mode. ensures that the file is properly closed after block of code is executed
-    with open(filename, 'r') as file:
-#reads the entire content of the opened file and assigns it to the variable 'file'.
+def select_word(difficulty_words):
+    with open("words.txt", 'r') as file:
         file = file.read()
-#splits the content of the 'file' variable into list of words using whitespace as separator. resulting list is sorted in the variable words_list
     words_list = file.split()
+    if difficulty_words == "easy_words":
+        easy_words = [word for word in words_list if 4 <= len(word) <= 6]
+        random_word = random.choice(easy_words)
+        return random_word
+    if difficulty_words == "medium_words":
+        medium_words = [word for word in words_list if 6 <= len(word) <= 8]
+        random_word = random.choice(medium_words)
+        return random_word
+    if difficulty_words == "hard_words":
+        hard_words = [word for word in words_list if len(word) > 8]
+        random_word = random.choice(hard_words)
+        return random_word
+# uses 'with' statement to open specified 'filename' in read mode. ensures that the file is properly closed after block of code is executed
+    #with open(filename, 'r') as file:
+#reads the entire content of the opened file and assigns it to the variable 'file'.
+        #file = file.read()
+#splits the content of the 'file' variable into list of words using whitespace as separator. resulting list is sorted in the variable words_list
+    #words_list = file.split()
 #uses 'random.choice()' function from the 'random' module to randomly select 1 word from the 'words_list' and assigns it to the variable 'random_word'.
     random_word = random.choice(words_list)
 #returns the randomly selected 'random_word' as result of 'select_word' function.
     return random_word
 
-
-    # eventually function will take in the file and return a word in the list at random
+# eventually function will take in the file and return a word in the list at random
+def select_difficulty():
+    print("Select difficulty level:")
+    print("1. Easy")
+    print("2. Medium")
+    print("3. Hard")
+    choice = input("Enter your choice (1/2/3): ")
+    if choice == "1":
+        return "easy_words"
+    elif choice == "2":
+        return "medium_words"
+    elif choice == "3":
+        return "hard_words"
+    else:
+        print("Invalid choice. Defaulting to medium difficulty")
+        return "medium_words"
 
 # starts definition of function "display_word_board" that takes 2 arguments: 'word'(word to be guessed) and 'guessed_letters (list of letters the player guessed)
 def display_word_board(word, guessed_letters):
@@ -58,9 +94,26 @@ def user_guess(counter):
 
 
 # starts the definition of a function named 'play_game' which represents main game loop
+def display_game_over():
+    print('Game over!')
+    replay = input('Play again? (y/n): ')
+    return replay.lower() == 'y'
+
+
+def restart_game():
+    replay = display_game_over()
+    if replay:
+        play_game()
+    else:
+        exit()
+
+
 def play_game():
+    # easy_words, medium_words, hard_words = categorize_words("words.txt")
+
+    difficulty_words = select_difficulty()
+    random_word = select_word(difficulty_words)
 # calls 'select_word' function with the argument '"test-word.txt"' to randomly select a word from the list of words in the specified file. selected word is assigned to the variable 'random_word'
-    random_word = select_word("test-word.txt")
 #initialize an empty list 'guessed_letters' to store the guessed letters and set initial value of 'counter' to 8(number of guesses)
     guessed_letters = []
     counter = 8
@@ -84,8 +137,8 @@ def play_game():
     else:
         print("You stink you lost!")
 # if guessed letter is incorrect, this line decreases the value of 'counter' by 1, reducing guesses
+    restart_game()
             
-
 
 if __name__ == "__main__":
     play_game()
